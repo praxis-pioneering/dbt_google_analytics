@@ -1,8 +1,9 @@
 version: 2
 
 sources:
-  - name: shopify
-    database: umg-praxis
-    dataset: shopify
+
+  - name: umg_ga
+    database: universal-music-bigquery # gcp-project
+    schema: 128747319 # gcp-dataset
     tables:
-        - name: shops
+      - name: ga_sessions_*
