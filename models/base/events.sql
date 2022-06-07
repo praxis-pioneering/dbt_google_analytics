@@ -28,6 +28,6 @@ case when hits.eCommerceAction.action_type = 1 then 'Click through of product li
 	 when hits.eCommerceAction.action_type = 0 then 'Unknown' end as ecommerce_action_type_desc,
 
 FROM
-{{ source('umg_ga', 'ga_sessions_*')}} t,
+{{ source('umg_ga', 'ga_sessions_20220606')}} t,
 UNNEST(t.hits) AS hits,
 UNNEST(product) AS product
