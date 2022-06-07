@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+
+  - name: umg_ga
+    database: universal-music-bigquery # gcp-project
+    dataset: 128747319 # gcp-dataset
+    tables:
+      - name: ga_sessions_
+
