@@ -1,6 +1,5 @@
-
-name: 'dbt_google_analytics'
-version: '1.0.0'
+name: "dbt_google_analytics"
+version: "1.0.0"
 config-version: 2
 
 # Profile to connect to data warehouse, optional in cloud
@@ -26,20 +25,20 @@ packages-install-path: dbt_packages
 
 vars:
   session_lookback_days: 2
-  bon_jovi: source('umg_ga', 'ga_sessions_20220606')
 
 models:
-  ga4_bigquery_starter:
-      +persist_docs:
-        relation: true
-        columns: true
-      admin:
-          materialized: table
-      base:
-          materialized: table
-      join:
-          materialized: table          
-      math:
-          materialized: table
-      visualization:
-          materialized: table
+  dbt_google_analytics:
+    +persist_docs:
+      relation: true
+      columns: true
+    materialized: incremental
+    # admin:
+    #   materialized: table
+    # base:
+    #   materialized: table
+    # join:
+    #   materialized: table
+    # math:
+    #   materialized: table
+    # visualization:
+    #   materialized: table
