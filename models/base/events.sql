@@ -1,6 +1,6 @@
 SELECT 
 CONCAT(fullVisitorId,CAST(visitId AS string)) AS session_id,
-TIMESTAMP_SECONDS(SAFE_CAST(visitStartTime+hits.time/1000 AS INT64)) AS session_ts,
+TIMESTAMP_SECONDS(SAFE_CAST(visitStartTime AS INT64)) AS session_ts,
 TIMESTAMP_SECONDS(SAFE_CAST(visitStartTime+hits.time/1000 AS INT64)) AS hit_ts,
 fullVisitorId AS full_visitor_id,
 hits.hitNumber as session_hit_number,
@@ -13,6 +13,10 @@ hits.isEntrance as hit_is_session_entrance,
 hits.isExit as hit_is_session_exit,
 hits.referer as hit_referer,
 hits.type as hit_type,
+hits.eventInfo.eventCategory,
+hits.eventInfo.eventAction,
+hits.eventInfo.eventLabel,
+hits.eventInfo.eventValue,
 case when hits.eCommerceAction.action_type = '1' then 'Click through of product lists'
 	 when hits.eCommerceAction.action_type = '2' then 'Product detail views'
 	 when hits.eCommerceAction.action_type = '3' then 'Add product(s) to cart'
@@ -24,3 +28,4 @@ case when hits.eCommerceAction.action_type = '1' then 'Click through of product 
 	 when hits.eCommerceAction.action_type = '0' then 'Unknown' end as ecommerce_action_type_desc,
 
 FROM {{ source('umg_ga', 'ga_sessions_20220606')}} t, UNNEST(t.hits) AS hits
+-- FROM {{ var('bon_jovi') }} t, UNNEST(t.hits) AS hits
