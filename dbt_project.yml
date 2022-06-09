@@ -25,13 +25,16 @@ packages-install-path: dbt_packages
 
 vars:
   session_lookback_days: 2
+  rangeStart: '20190701'
+  rangeEnd: '20190701'
 
 models:
   dbt_google_analytics:
     +persist_docs:
       relation: true
       columns: true
-    materialized: incremental
+    staging:
+      +materialized: view
     # admin:
     #   materialized: table
     # base:
