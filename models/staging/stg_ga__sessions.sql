@@ -11,7 +11,7 @@ renamed as (
 		visitNumber as session_number, -- user's first session = 1
 		visitId as user_session_id, -- session id, only unique to the user
         timestamp_seconds(visitStartTime) as session_start,
-		-- omitted date, equal to date in session_start
+		parse_date("%Y%m%d", date) as date,
 		-- =====================================================================
 		-- totals: aggregate session values
 		totals.bounces as total_session_bounces,
@@ -158,4 +158,3 @@ renamed as (
 )
 
 select * from renamed
-where transaction_shipping is not null
