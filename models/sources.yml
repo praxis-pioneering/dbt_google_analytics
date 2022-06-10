@@ -7,3 +7,9 @@ sources:
     dataset: "128747319" # gcp-dataset
     tables:
       - name: ga_sessions_20220606
+
+  - name: test
+    database: bigquery-public-data
+    dataset: google_analytics_sample
+    tables:
+      - name: ga_sessions_*

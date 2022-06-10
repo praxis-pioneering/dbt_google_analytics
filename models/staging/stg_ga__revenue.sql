@@ -4,13 +4,14 @@ with cte as
   , h.transaction.transactionId transaction_id
   , sum(p.productRevenue/1000000) revenue
   , sum(p.productQuantity) quantity
-  FROM {{ source('umg_ga', 'ga_sessions_20220606') }}, unnest(hits) as h,  unnest(h.product) as p
+  FROM {{ source('test', 'ga_sessions_*') }}, unnest(hits) as h,  unnest(h.product) as p
   -- WHERE {{tableRange()}}
   {{ group_by(2) }})
 
-SELECT name product_name
-  , sum(revenue) revenue
-  , sum(quantity) quantity
+SELECT 
+  name as product_name
+  , sum(revenue) as revenue
+  , sum(quantity) as quantity
   , count(distinct transaction_id) transactions
   FROM cte
   group by 1
