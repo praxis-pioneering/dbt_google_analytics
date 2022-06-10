@@ -145,6 +145,3 @@ renamed as (
 )
 
 select * from renamed
--- {{ not_null("event_value") }}
--- {.{ is_set("source_keyword") }}
--- where hit_type != "EVENT"
