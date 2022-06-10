@@ -4,9 +4,9 @@ sources:
 
   - name: umg_ga
     database: umg-praxis # gcp-project
-    dataset: "128747319" # gcp-dataset
+    dataset: "189008849" # gcp-dataset
     tables:
-      - name: ga_sessions_20220606
+      - name: ga_sessions_cut
 
   - name: test
     database: bigquery-public-data

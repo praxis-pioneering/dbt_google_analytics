@@ -17,7 +17,7 @@ from (
     case when _table_suffix like '%intraday%' then true else false end as is_intraday,
     *,
     row_number() over (partition by user_pseudo_id, event_name, event_timestamp order by event_timestamp) as row
-  from {{ source('umg_ga', 'ga_sessions_20220606') }}
+  from {{ source('umg_ga', 'ga_sessions_cut') }}
     
   {% if is_incremental() %}
   -- Refresh only recent session data to limit query costs, unless running with --full-refresh
