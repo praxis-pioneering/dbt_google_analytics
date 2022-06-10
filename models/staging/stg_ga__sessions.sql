@@ -18,13 +18,10 @@ renamed as (
 		totals.hits as total_session_hits,
 		totals.newVisits as session_is_new_visit, -- new users in session (1=user's first visit, null otherwise)
 		totals.pageviews as session_pageviews,
-		totals.screenviews as session_screenviews,
 		totals.sessionQualityDim as session_quality, -- closeness to transacting (1-100)
-		totals.timeOnScreen as session_time_on_screen,
 		totals.timeOnSite as total_session_time,
 		totals.totalTransactionRevenue as session_revenue,
 		totals.transactions as total_session_transactions,
-		totals.uniqueScreenViews as session_unique_screenviews,
 		totals.visits as session_interacted, -- 1 if session had interaction events, null otherwise
 		-- =====================================================================
 
@@ -32,7 +29,6 @@ renamed as (
 		-- trafficSource: info about session origins
 		trafficSource.adContent as ad_content,
 		trafficSource.campaign as ad_campaign,
-		trafficSource.campaignCode as ad_campaign_code,
 		trafficSource.isTrueDirect as direct, -- true if direct or 2 succesive sessions with same details, otherwise null
 		trafficSource.keyword as source_keyword,
 		trafficSource.medium as source_medium,
@@ -53,7 +49,6 @@ renamed as (
 		-- trafficSource.adwordsClickInfo.slot as ad_slot,
 		-- =====================================================================
 
-		socialEngagementType as social_engagement_type, -- "Socially Engaged" or "Not Socially Engaged"
 		channelGrouping as channel_grouping,
 
 		-- =====================================================================
@@ -89,19 +84,11 @@ renamed as (
 		-- =====================================================================
 		-- hits
 		hits.hitNumber as hit_number,
-		hits.isEntrance as hit_is_session_entrance, -- hit was first pageview/screenview of session
-		hits.isExit as hit_is_session_exit, -- hit was last pageview/screenview
-		hits.isInteraction as hit_is_interaction,
-
 		hits.time as hit_time,
 		hits.hour as hit_hour,
 		hits.minute as hit_minute,
-		hits.referer as hit_referer,
-		hits.type as hit_type,
 		hits.eventInfo.eventCategory as event_category,
 		hits.eventInfo.eventAction as event_action,
-		hits.eventInfo.eventLabel as event_label,
-		hits.eventInfo.eventValue as event_value,
 
 		case when hits.eCommerceAction.action_type = '1' then 'Click through of product lists'
 			 when hits.eCommerceAction.action_type = '2' then 'Product detail views'
@@ -112,7 +99,7 @@ renamed as (
 			 when hits.eCommerceAction.action_type = '7' then 'Refund of purchase'
 			 when hits.eCommerceAction.action_type = '8' then 'Checkout options'
 			 when hits.eCommerceAction.action_type = '0' then 'Unknown'
-		end as ecommerce_action_type_desc,
+		end as action_type,
 
 		-- Product
 		-- product.isImpression as product_viewed, -- BOOLEAN 	TRUE if at least one user viewed this product (i.e., at least one impression) when it appeared in the product list.
@@ -158,3 +145,6 @@ renamed as (
 )
 
 select * from renamed
+-- {{ not_null("event_value") }}
+-- {.{ is_set("source_keyword") }}
+-- where hit_type != "EVENT"
