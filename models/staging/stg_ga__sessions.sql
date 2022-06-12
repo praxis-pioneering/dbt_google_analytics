@@ -34,21 +34,8 @@ renamed as (
 		trafficSource.medium as source_medium,
 		trafficSource.referralPath as source_referral_path,
 		trafficSource.source as source_source,
-
-		-- ad info
-		-- trafficSource.adwordsClickInfo.adGroupId as ad_group_id,
-		-- trafficSource.adwordsClickInfo.adNetworkType as ad_network,
-		-- trafficSource.adwordsClickInfo.campaignId as ad_campaign_id,
-		-- trafficSource.adwordsClickInfo.creativeId as ad_id,
-		-- trafficSource.adwordsClickInfo.criteriaId as ad_criteria_id,
-		-- trafficSource.adwordsClickInfo.criteriaParameters as ad_criteria_params,
-		-- trafficSource.adwordsClickInfo.customerId as ad_customer_id,
-		-- trafficSource.adwordsClickInfo.gclId as ad_click_id,
-		-- trafficSource.adwordsClickInfo.isVideoAd as ad_is_video,
-		-- trafficSource.adwordsClickInfo.page as ad_page,
-		-- trafficSource.adwordsClickInfo.slot as ad_slot,
 		-- =====================================================================
-
+		
 		channelGrouping as channel_grouping,
 
 		-- =====================================================================
@@ -90,16 +77,17 @@ renamed as (
 		hits.eventInfo.eventCategory as event_category,
 		hits.eventInfo.eventAction as event_action,
 
-		case when hits.eCommerceAction.action_type = '1' then 'Click through of product lists'
-			 when hits.eCommerceAction.action_type = '2' then 'Product detail views'
-			 when hits.eCommerceAction.action_type = '3' then 'Add product(s) to cart'
-			 when hits.eCommerceAction.action_type = '4' then 'Remove product(s) from cart'
-			 when hits.eCommerceAction.action_type = '5' then 'Check out'
-			 when hits.eCommerceAction.action_type = '6' then 'Completed purchase'
-			 when hits.eCommerceAction.action_type = '7' then 'Refund of purchase'
-			 when hits.eCommerceAction.action_type = '8' then 'Checkout options'
-			 when hits.eCommerceAction.action_type = '0' then 'Unknown'
+		case when hits.eCommerceAction.action_type = '1' then 'click_through' -- 'Click through of product lists'
+			 when hits.eCommerceAction.action_type = '2' then 'view' -- 'Product detail views'
+			 when hits.eCommerceAction.action_type = '3' then 'add' -- 'Add product(s) to cart'
+			 when hits.eCommerceAction.action_type = '4' then 'remove' -- 'Remove product(s) from cart'
+			 when hits.eCommerceAction.action_type = '5' then 'check_out' -- 'Check out'
+			 when hits.eCommerceAction.action_type = '6' then 'complete' -- 'Completed purchase'
+			 when hits.eCommerceAction.action_type = '7' then 'refund' -- 'Refund of purchase'
+			 when hits.eCommerceAction.action_type = '8' then 'opts' -- 'Checkout options'
+			 when hits.eCommerceAction.action_type = '0' then 'unkown' -- 'Unknown'
 		end as action_type,
+
 
 		-- Product
 		-- product.isImpression as product_viewed, -- BOOLEAN 	TRUE if at least one user viewed this product (i.e., at least one impression) when it appeared in the product list.
@@ -129,16 +117,6 @@ renamed as (
 		hits.transaction.localTransactionRevenue as transaction_local_revenue, -- INTEGER 	Total transaction revenue in local currency, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
 		hits.transaction.localTransactionTax as transaction_local_tax, -- INTEGER 	Total transaction tax in local currency, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
 		hits.transaction.localTransactionShipping as transaction_local_shipping, -- INTEGER 	Total transaction shipping cost in local currency, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
-
-		-- Item (all null or duplicates)
-		-- hits.item.transactionId as item_transaction_id, -- STRING 	The transaction ID of the ecommerce transaction.
-		-- hits.item.productName as item_product_name, -- STRING 	The name of the product.
-		-- hits.item.productCategory as item_product_category, -- STRING 	The category of the product.
-		-- hits.item.productSku as item_product_sku, -- STRING 	The SKU or product ID.
-		-- hits.item.itemQuantity as item_quantity, -- INTEGER 	The quantity of the product sold.
-		-- hits.item.itemRevenue as item_revenue, -- INTEGER 	Total revenue from the item, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
-		-- hits.item.currencyCode as item_currency_code, -- STRING 	The local currency code for the transaction.
-		-- hits.item.localItemRevenue as item_local_revenue, -- INTEGER 	Total revenue from this item in local currency, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
 		-- =====================================================================
 
     from source, unnest(source.hits) as hits, unnest(hits.product) as product -- no results on 2022/06/06 data, all hits.product = []

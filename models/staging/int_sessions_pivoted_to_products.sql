@@ -19,6 +19,7 @@ pivot_and_aggregate_sessions_to_product_level as (
 		product_sku,
 		product_name,
         sum(product_revenue/{{price_divisor}}) as revenue,
+        count(distinct if(action_type = "view",client_id, null)) as num_views,
 	from sessions
     {{ group_by_first(2) }}
     order by 1
