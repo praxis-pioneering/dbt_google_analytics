@@ -38,6 +38,5 @@ if(
 	    , ' '
     ),
     products.name
-) as name
+)
 {% endmacro %}
-
