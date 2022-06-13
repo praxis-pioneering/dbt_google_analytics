@@ -2,24 +2,22 @@
 
 with
 
-{{ get_product_sessions() }},
-
-product_sku_level as (
+product_sku_performance as (
 	select
-		product_name,
-		product_sku as sku,
-        if (product_variant != '(not set)', product_variant, null) as variant,
-        avg(product_price) / {{price_divisor}} as price,
-        countif(action_type = 'purchase') as purchases,
-        sum(product_revenue/{{price_divisor}}) as revenue,
-        count(distinct if(action_type = 'view', client_id, null)) as num_users_viewed,
-        countif(action_type = 'view') as total_views,
-        (countif(action_type = 'purchase') / nullif(countif(action_type = 'view'), 0)) as conversion_rate,
-        countif(action_type = 'refund') as refunds,
-        sum(product_refund_amount/{{price_divisor}}) as total_refund_amount,
-	from sessions
+		name,
+		variant,
+		sku,
+		price,
+		purchases,
+		revenue,
+		num_users_viewed,
+		total_views,
+        (purchases / nullif(total_views, 0)) as conversion_rate,
+		refunds,
+		total_refund_amount,
+	from {{ ref('int_product_level') }}
     {{ group_by_first(3) }}
-    order by 2
+    order by sku
 )
 
-select * from product_sku_level
+select * from product_sku_performance
