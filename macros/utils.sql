@@ -25,3 +25,19 @@ sessions_between as (
     (s.date between '{{start}}' and '{{end}}')
 )
 {% endmacro %}
+
+{% macro trim_prod_name() %}
+if(
+    strpos(products.name, '-') != 0,
+    array_to_string(
+	    array(
+	    	select * except(offset)
+	    	from products.name_arr with offset
+	    	where offset < array_length(products.name_arr) - 1
+	    )
+	    , ' '
+    ),
+    products.name
+) as name
+{% endmacro %}
+
