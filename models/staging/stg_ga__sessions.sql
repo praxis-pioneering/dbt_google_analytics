@@ -77,18 +77,17 @@ renamed as (
 		hits.eventInfo.eventCategory as event_category,
 		hits.eventInfo.eventAction as event_action,
 
-		case when hits.eCommerceAction.action_type = '1' then 'click_through' -- 'Click through of product lists'
+		case when hits.eCommerceAction.action_type = '1' then 'click through' -- 'Click through of product lists'
 			 when hits.eCommerceAction.action_type = '2' then 'view' -- 'Product detail views'
 			 when hits.eCommerceAction.action_type = '3' then 'add' -- 'Add product(s) to cart'
 			 when hits.eCommerceAction.action_type = '4' then 'remove' -- 'Remove product(s) from cart'
-			 when hits.eCommerceAction.action_type = '5' then 'check_out' -- 'Check out'
-			 when hits.eCommerceAction.action_type = '6' then 'complete' -- 'Completed purchase'
+			 when hits.eCommerceAction.action_type = '5' then 'check out' -- 'Check out'
+			 when hits.eCommerceAction.action_type = '6' then 'purchase' -- 'Completed purchase'
 			 when hits.eCommerceAction.action_type = '7' then 'refund' -- 'Refund of purchase'
 			 when hits.eCommerceAction.action_type = '8' then 'opts' -- 'Checkout options'
-			 when hits.eCommerceAction.action_type = '0' then 'unkown' -- 'Unknown'
+			 when hits.eCommerceAction.action_type = '0' then 'unknown' -- 'Unknown'
 		end as action_type,
-
-
+		
 		-- Product
 		-- product.isImpression as product_viewed, -- BOOLEAN 	TRUE if at least one user viewed this product (i.e., at least one impression) when it appeared in the product list.
 		-- product.isClick as product_clicked, -- BOOLEAN 	Whether users clicked this product when it appeared in the product list.
