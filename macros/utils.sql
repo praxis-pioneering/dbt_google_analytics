@@ -26,17 +26,17 @@ sessions_between as (
 )
 {% endmacro %}
 
-{% macro trim_prod_name() %}
+{% macro trim_prod_name(parent) %}
 if(
-    strpos(products.name, '-') != 0,
+    strpos({{parent}}.product_name, '-') != 0,
     array_to_string(
 	    array(
 	    	select * except(offset)
-	    	from products.name_arr with offset
-	    	where offset < array_length(products.name_arr) - 1
+	    	from {{parent}}.name_arr with offset
+	    	where offset < array_length({{parent}}.name_arr) - 1
 	    )
 	    , ' '
     ),
-    products.name
+    {{parent}}.product_name
 )
 {% endmacro %}

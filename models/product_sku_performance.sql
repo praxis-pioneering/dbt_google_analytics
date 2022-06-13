@@ -6,7 +6,7 @@ with
 
 product_sku_level as (
 	select
-		product_name as name,
+		product_name,
 		product_sku as sku,
         if (product_variant != '(not set)', product_variant, null) as variant,
         avg(product_price) / {{price_divisor}} as price,

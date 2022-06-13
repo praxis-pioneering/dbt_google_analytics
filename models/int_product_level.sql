@@ -7,13 +7,14 @@ products as (
 products_with_split_name as (
 	select
 		*,
-		split(name, ' - ') as name_arr
+		split(product_name, ' - ') as name_arr
 	from products
 ),
 products_with_common_name as (
 	select
-		{{ trim_prod_name() }} as name,
-		*,
+		{{ trim_prod_name('products_with_split_name') }} as name,
+		*
+	from products_with_split_name
 )
 
 select * from products_with_common_name

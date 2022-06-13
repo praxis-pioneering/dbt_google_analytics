@@ -8,10 +8,10 @@ products as (
 
 product_performance as (
 	select
-		common_name as name,
+		name as name,
 		last_value(variant)
 		over (
-			partition by name,
+			partition by name
 			order by purchases
 			-- rows between unbounded preceding and unbounded following
 		) as most_bought_variant,
