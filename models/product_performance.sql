@@ -2,22 +2,13 @@
 
 with
 
-sessions as (
-	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.product_sku != '(not set)'
-),
-
-sessions_this_week as (
-    select * from {{ ref('stg_ga__sessions') }} as s
-    where
-        (s.product_sku != '(not set)') and
-        (s.date between '2022-06-05' and '2022-06-11')
-),
+{{ get_product_sessions() }},
 
 pivot_and_aggregate_sessions_to_product_level as (
 	select
 		product_name,
 		product_sku,
+        product_variant,
         avg(product_price) / {{price_divisor}} as price,
         countif(action_type = 'purchase') as purchases,
         sum(product_revenue/{{price_divisor}}) as revenue,
@@ -25,7 +16,7 @@ pivot_and_aggregate_sessions_to_product_level as (
         countif(action_type = 'view') as total_views,
         (countif(action_type = 'purchase') / nullif(countif(action_type = 'view'), 0)) as conversion_rate
 	from sessions
-    {{ group_by_first(2) }}
+    {{ group_by_first(3) }}
     order by 2
 )
 

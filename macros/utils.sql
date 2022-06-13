@@ -13,14 +13,15 @@ where {{col}} != "(not set)"
 {% macro get_product_sessions() %}
 sessions as (
 	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.product_sku != "(not set)"
+    where s.product_sku != '(not set)' and
+    s.product_name != '(not set)'
 )
 {% endmacro %}
 
 {% macro get_product_sessions_between(start, end) %}
 sessions_between as (
 	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.product_sku != "(not set)" and
+    where s.product_sku != '(not set)' and
     (s.date between '{{start}}' and '{{end}}')
 )
 
