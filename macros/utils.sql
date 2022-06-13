@@ -24,5 +24,4 @@ sessions_between as (
     where s.product_sku != '(not set)' and
     (s.date between '{{start}}' and '{{end}}')
 )
-
 {% endmacro %}

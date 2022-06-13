@@ -4,7 +4,7 @@ with
 
 {{ get_product_sessions() }},
 
-pivot_and_aggregate_sessions_to_product_level as (
+product_sku_level as (
 	select
 		product_name as name,
 		product_sku as sku,
@@ -22,4 +22,4 @@ pivot_and_aggregate_sessions_to_product_level as (
     order by 2
 )
 
-select * from pivot_and_aggregate_sessions_to_product_level
+select * from product_sku_level
