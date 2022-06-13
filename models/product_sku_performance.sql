@@ -14,7 +14,7 @@ pivot_and_aggregate_sessions_to_product_level as (
         sum(product_revenue/{{price_divisor}}) as revenue,
         count(distinct if(action_type = 'view', client_id, null)) as num_users_viewed,
         countif(action_type = 'view') as total_views,
-        (countif(action_type = 'purchase') / nullif(countif(action_type = 'view'), 0)) as conversion_rate
+        (countif(action_type = 'purchase') / nullif(countif(action_type = 'view'), 0)) as conversion_rate,
         countif(action_type = 'refund') as refunds,
         sum(product_refund_amount/{{price_divisor}}) as total_refund_amount,
 	from sessions
