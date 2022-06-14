@@ -28,7 +28,7 @@ sessions_between as (
 
 {% macro trim_prod_name(parent) %}
 if(
-    strpos({{parent}}.product_name, '-') != 0,
+    {{parent}}.variant is not null,
     array_to_string(
 	    array(
 	    	select * except(offset)

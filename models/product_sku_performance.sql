@@ -16,7 +16,6 @@ product_sku_performance as (
 		refunds,
 		total_refund_amount,
 	from {{ ref('int_product_level') }}
-    {{ group_by_first(3) }}
     order by sku
 )
 
