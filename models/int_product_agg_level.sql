@@ -12,7 +12,7 @@ product_performance as (
 		price,
 		sum(purchases) as total_purchases,
 		sum(revenue) as total_revenue,
-		if(sum(purchases) is not max(most_bought_variant),
+		if(sum(purchases) is not null, max(most_bought_variant), null) as most_bought_variant,
 		sum(total_views) as total_views,
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
