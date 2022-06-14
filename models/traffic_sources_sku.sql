@@ -1,11 +1,13 @@
 {%- set actions = ["view", "purchase"] -%}
-{%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "(Other)", "Email"] -%}
-{%- set mediums = ["referral", "(none)", "organic", "product_sync", "email", "product_shelf", "cpc", "(not set)", "original"] -%}
+{%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "Email"] -%}
+{%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
 
 with
 {{ get_product_sessions() }},
 
-products as select * from {{ ref('int_product_level') }},
+products as (
+	select * from {{ ref('int_product_level') }}
+),
 
 traffic_source_performance as (
 	select
@@ -21,20 +23,21 @@ traffic_source_performance as (
 		countif(channel = 'Direct') as direct_sessions,
 
 		{% for action in actions %}
-			{% for channel in channels %}
-			countif(action = '{{action}}' and channel = '{{channel}}') as {{action}}s_from_{{channel}},
-			{% endfor %}
+		{% for channel in channels %}
+		countif(action = '{{action}}' and channel = '{{channel}}') as {{action}}s_from_{{channel | lower | replace(" ","_")}}_channel,
+		{% endfor %}
 		{% endfor %}
 
 		-- Medium
 		{% for action in actions %}
-			{% for medium in mediums %}
-			countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}},
-			{% endfor %}
+		{% for medium in mediums %}
+		countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}}_medium,
+		{% endfor %}
 		{% endfor %}
 
 	from products
 	left outer join sessions using (sku)
+	{{ group_by_first(7) }}
 )
 
 select * from traffic_source_performance
