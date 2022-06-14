@@ -30,13 +30,13 @@ renamed as (
 		trafficSource.adContent as ad_content,
 		trafficSource.campaign as ad_campaign,
 		trafficSource.isTrueDirect as is_direct, -- true if direct or 2 succesive sessions with same details, otherwise null
-		trafficSource.keyword as source_keyword,
-		trafficSource.medium as source_medium,
-		trafficSource.referralPath as source_referral_path,
-		trafficSource.source as traffic_source,
+		trafficSource.keyword as keyword,
+		trafficSource.medium as medium,
+		trafficSource.referralPath as referral_path,
+		trafficSource.source as source,
 		-- =====================================================================
 
-		channelGrouping as channel_grouping,
+		channelGrouping as channel,
 
 		-- =====================================================================
 		-- device: user device info
