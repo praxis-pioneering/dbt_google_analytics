@@ -3,7 +3,7 @@ with
 {{ get_product_sessions() }},
 
 products as (
-	select * from {{ ref('int_product_level') }}
+	select * from {{ ref('int_product_sku_level') }}
 ),
 
 product_performance as (
