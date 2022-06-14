@@ -13,14 +13,15 @@ traffic_source_performance as (
 		name,
 		sku,
 		variant,
-
-		-- Medium
+		price,
 		{% for action in actions %}
 		{% for medium in mediums %}
-		countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}}_medium,
+		countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}},
+		{% if action == "purchase" %}
+		price * countif(action = '{{action}}' and medium = '{{medium}}') as rev_from_{{medium}},
+		{% endif %}
 		{% endfor %}
 		{% endfor %}
-
 	from products
 	left outer join sessions using (sku)
 	{{ group_by_first(3) }}

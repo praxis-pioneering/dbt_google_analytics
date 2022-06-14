@@ -13,20 +13,20 @@ traffic_source_performance as (
 		name,
 		sku,
 		variant,
-
-		-- Channel
+		price,
 		countif(is_direct) as ga_direct_sessions,
 		countif(channel = 'Direct') as direct_sessions,
-
 		{% for action in actions %}
 		{% for channel in channels %}
-		countif(action = '{{action}}' and channel = '{{channel}}') as {{action}}s_from_{{channel | lower | replace(" ","_")}}_channel,
+		countif(action = '{{action}}' and channel = '{{channel}}') as {{action}}s_from_{{channel | lower | replace(" ","_")}},
+		{% if action == "purchase" %}
+		price * countif(action = '{{action}}' and channel = '{{channel}}') as rev_from_{{channel | lower | replace(" ","_")}},
+		{% endif %}
 		{% endfor %}
 		{% endfor %}
-
 	from products
 	left outer join sessions using (sku)
-	{{ group_by_first(3) }}
+	{{ group_by_first(4) }}
 )
 
 select * from traffic_source_performance
