@@ -40,3 +40,10 @@ if(
     {{parent}}.product_name
 )
 {% endmacro %}
+
+{% macro get_col_vals(col) %}
+select
+	{{col}},
+from renamed
+group by {{col}}
+{% endmacro %}

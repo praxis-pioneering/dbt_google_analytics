@@ -29,13 +29,13 @@ renamed as (
 		-- trafficSource: info about session origins
 		trafficSource.adContent as ad_content,
 		trafficSource.campaign as ad_campaign,
-		trafficSource.isTrueDirect as direct, -- true if direct or 2 succesive sessions with same details, otherwise null
+		trafficSource.isTrueDirect as is_direct, -- true if direct or 2 succesive sessions with same details, otherwise null
 		trafficSource.keyword as source_keyword,
 		trafficSource.medium as source_medium,
 		trafficSource.referralPath as source_referral_path,
-		trafficSource.source as source_source,
+		trafficSource.source as traffic_source,
 		-- =====================================================================
-		
+
 		channelGrouping as channel_grouping,
 
 		-- =====================================================================
@@ -87,7 +87,7 @@ renamed as (
 			 when hits.eCommerceAction.action_type = '8' then 'opts' -- 'Checkout options'
 			 when hits.eCommerceAction.action_type = '0' then 'unknown' -- 'Unknown'
 		end as action_type,
-		
+
 		-- Product
 		-- product.isImpression as product_viewed, -- BOOLEAN 	TRUE if at least one user viewed this product (i.e., at least one impression) when it appeared in the product list.
 		-- product.isClick as product_clicked, -- BOOLEAN 	Whether users clicked this product when it appeared in the product list.

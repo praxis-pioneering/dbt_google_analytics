@@ -9,7 +9,7 @@ product_sku_level as (
 	select
 		max(product_name) as product_name,
 		product_sku as sku,
-        if (product_variant != '(not set)', product_variant, null) as variant,
+		nullif(product_variant, '(not set)') as variant,
 		split(max(product_name), ' - ') as name_arr,
         avg(product_price) / {{price_divisor}} as price,
         countif(action_type = 'purchase') as purchases,
@@ -18,10 +18,16 @@ product_sku_level as (
         countif(action_type = 'view') as total_views,
         countif(action_type = 'refund') as refunds,
         sum(product_refund_amount/{{price_divisor}}) as total_refund_amount,
-        
+
+		-- channels
+		countif(is_direct) as direct_visits,
+		countif(source_medium = 'referral' and action_type = 'view') as views_from_referral,
+		countif(source_medium = 'referral' and action_type = 'purchase') as purchases_from_referral,
+		countif(source_medium = 'social' and action_type = 'view') as views_from_social,
+		countif(source_medium = 'social' and action_type = 'purchase') as purchases_from_social,
 	from sessions
     group by sku, variant
-    order by 2
+    order by sku
 ),
 
 products_with_common_name as (
