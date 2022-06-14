@@ -14,17 +14,25 @@ traffic_source_performance as (
 		sku,
 		variant,
 		price,
+		total_views,
 		{% for action in actions %}
 		{% for medium in mediums %}
 		countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}},
-		{% if action == "purchase" %}
-		price * countif(action = '{{action}}' and medium = '{{medium}}') as rev_from_{{medium}},
-		{% endif %}
 		{% endfor %}
 		{% endfor %}
 	from products
 	left outer join sessions using (sku)
-	{{ group_by_first(3) }}
+	{{ group_by_first(5) }}
 )
 
-select * from traffic_source_performance
+product_medium_stats as (
+	select
+		*,
+		{% for medium in mediums %}
+		price * purchases_from_{{medium}} as rev_from_{{medium}},
+		purchases_from_{{medium}} / nullif(views_from_{{medium}},0) as {{medium}}_conversion_rate,
+		{% endfor %}
+	from product_medium_counts
+)
+
+select * from product_medium_stats
