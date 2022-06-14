@@ -86,7 +86,7 @@ renamed as (
 			 when hits.eCommerceAction.action_type = '7' then 'refund' -- 'Refund of purchase'
 			 when hits.eCommerceAction.action_type = '8' then 'opts' -- 'Checkout options'
 			 when hits.eCommerceAction.action_type = '0' then 'unknown' -- 'Unknown'
-		end as action_type,
+		end as action,
 
 		-- Product
 		-- product.isImpression as product_viewed, -- BOOLEAN 	TRUE if at least one user viewed this product (i.e., at least one impression) when it appeared in the product list.
@@ -101,7 +101,7 @@ renamed as (
 		product.productQuantity as product_quantity, -- INTEGER 	The quantity of the product purchased.
 		product.productRefundAmount as product_refund_amount, -- INTEGER 	The amount processed as part of a refund for a product, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
 		product.productRevenue as product_revenue, -- INTEGER 	The revenue of the product, expressed as the value passed to Analytics multiplied by 10^6 (e.g., 2.40 would be given as 2400000).
-		product.productSKU as product_sku, -- STRING 	Product SKU.
+		product.productSKU as sku, -- STRING 	Product SKU.
 		product.productVariant as product_variant, -- STRING 	Product Variant.
 		product.v2ProductCategory as product_category, -- STRING 	Product Category.
 		product.v2ProductName as product_name, -- STRING 	Product Name.
