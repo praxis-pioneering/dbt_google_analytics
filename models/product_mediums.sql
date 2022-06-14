@@ -8,7 +8,7 @@ products as (
 	select * from {{ ref('int_product_level') }}
 ),
 
-traffic_source_performance as (
+product_medium_counts as (
 	select
 		name,
 		sku,
@@ -23,7 +23,7 @@ traffic_source_performance as (
 	from products
 	left outer join sessions using (sku)
 	{{ group_by_first(5) }}
-)
+),
 
 product_medium_stats as (
 	select

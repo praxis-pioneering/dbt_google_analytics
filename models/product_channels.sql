@@ -30,7 +30,7 @@ product_channel_counts as (
 product_channel_stats as (
 	select
 		*,
-		{% for channel in channels | lower | replace(" ","_") %}
+		{% for channel in channels | map("lower") | map("replace", " ", "_") %}
 		price * purchases_from_{{channel}} as rev_from_{{channel}},
 		purchases_from_{{channel}} / nullif(views_from_{{channel}},0) as {{channel}}_conversion_rate,
 		{% endfor %}
