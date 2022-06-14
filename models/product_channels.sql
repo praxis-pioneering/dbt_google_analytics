@@ -19,7 +19,7 @@ product_channel_counts as (
 		countif(channel = 'Direct') as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
-		countif(action = '{{action}}' and channel = '{{channel}}') as {{action}}s_from_{{channel | lower | replace(" ","_")}},
+		countif(action = '{{action}}' and channel = '{{channel}}') as {{channel | lower | replace(" ","_")}}_{{action}}s,
 		{% endfor %}
 		{% endfor %}
 	from products
@@ -31,8 +31,8 @@ product_channel_stats as (
 	select
 		*,
 		{% for channel in channels | map("lower") | map("replace", " ", "_") %}
-		price * purchases_from_{{channel}} as rev_from_{{channel}},
-		purchases_from_{{channel}} / nullif(views_from_{{channel}},0) as {{channel}}_conversion_rate,
+		price * {{channel}}_purchases as {{channel}}_revenue,
+		{{channel}}_purchases / nullif({{channel}}_views,0) as {{channel}}_conversion_rate,
 		{% endfor %}
 	from product_channel_counts
 )

@@ -17,7 +17,7 @@ product_medium_counts as (
 		total_views,
 		{% for action in actions %}
 		{% for medium in mediums %}
-		countif(action = '{{action}}' and medium = '{{medium}}') as {{action}}s_from_{{medium}},
+		countif(action = '{{action}}' and medium = '{{medium}}') as {{medium}}_{{action}}s,
 		{% endfor %}
 		{% endfor %}
 	from products
@@ -29,8 +29,8 @@ product_medium_stats as (
 	select
 		*,
 		{% for medium in mediums %}
-		price * purchases_from_{{medium}} as rev_from_{{medium}},
-		purchases_from_{{medium}} / nullif(views_from_{{medium}},0) as {{medium}}_conversion_rate,
+		price * {{medium}}_purchases as {{medium}}_revenue,
+		{{medium}}_purchases / nullif({{medium}}_views,0) as {{medium}}_conversion_rate,
 		{% endfor %}
 	from product_medium_counts
 )
