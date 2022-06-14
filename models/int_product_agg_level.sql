@@ -8,11 +8,16 @@ products as (
 
 product_performance as (
 	select
-		name as name,
-		max(most_bought_variant),
+		name,
+		price,
+		sum(purchases) as total_purchases,
 		sum(revenue) as total_revenue,
+		if(sum(purchases) is not max(most_bought_variant),
+		sum(total_views) as total_views,
+		sum(refunds) as total_refunds,
+		sum(total_refunded_amount) as total_refunded_amount,
 	from products
-	{{ group_by_first(1) }}
+	{{ group_by_first(2) }}
 )
 
 select * from product_performance

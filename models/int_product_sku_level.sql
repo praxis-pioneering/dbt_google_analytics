@@ -12,12 +12,12 @@ product_sku_level as (
 		nullif(product_variant, '(not set)') as variant,
 		split(max(product_name), ' - ') as name_arr,
         avg(product_price) / {{price_divisor}} as price,
+		countif(action = 'view') as total_views,
+		count(distinct if(action = 'view', client_id, null)) as num_users_viewed,
         countif(action = 'purchase') as purchases,
         sum(product_revenue/{{price_divisor}}) as revenue,
-        count(distinct if(action = 'view', client_id, null)) as num_users_viewed,
-        countif(action = 'view') as total_views,
         countif(action = 'refund') as refunds,
-        sum(product_refund_amount/{{price_divisor}}) as total_refund_amount,
+        sum(product_refund_amount/{{price_divisor}}) as total_refunded_amount,
 	from sessions
     group by sku, variant
     order by sku
