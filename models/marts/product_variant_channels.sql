@@ -2,7 +2,10 @@
 {%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "Email"] -%}
 
 with
-{{ get_product_sessions() }},
+
+sessions as (
+	select * from {{ ref('sessions_grouped_by_time')}}
+),
 
 products as (
 	select * from {{ ref('product_variants') }}

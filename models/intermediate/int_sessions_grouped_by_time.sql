@@ -1,8 +1,10 @@
+{{ config(materialized='ephemeral') }}
+
 with
 
 {{ get_product_sessions() }},
 
-int_sessions_grouped_by_time as (
+sessions_grouped_by_time as (
     select
 		utc_hour as time,
 		product_name,
