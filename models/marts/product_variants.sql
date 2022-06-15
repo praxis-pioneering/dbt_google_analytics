@@ -3,11 +3,13 @@
 
 with
 
-{{ get_product_sessions() }},
+sessions as (
+	select * from {{ ref('int_sessions_grouped_by_time') }}
+),
 
 product_sku_level as (
 	select
-		utc_hour,
+		time,
 		max(product_name) as product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
 		sku,
 		nullif(product_variant, '(not set)') as variant,
@@ -20,8 +22,7 @@ product_sku_level as (
         countif(action = 'refund') as refunds,
         sum(product_refund_amount/{{price_divisor}}) as total_refunded_amount,
 	from sessions
-    group by sku, variant, utc_hour
-    order by sku
+    group by time, sku, variant
 ),
 
 products_with_common_name as (

@@ -2,20 +2,23 @@
 {%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
 
 with
-{{ get_product_sessions() }},
+
+sessions as (
+	select * from {{ ref('int_sessions_grouped_by_time') }}
+),
 
 products as (
-	select * from {{ ref('int_product_sku_level') }}
+	select * from {{ ref('product_variants') }}
 ),
 
 product_medium_counts as (
 	select
+		time,
 		name,
 		sku,
 		variant,
 		price,
 		total_views,
-		utc_hour,
 		{% for action in actions %}
 		{% for medium in mediums %}
 		countif(action = '{{action}}' and medium = '{{medium}}') as {{medium}}_{{action}}s,

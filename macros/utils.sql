@@ -18,14 +18,6 @@ sessions as (
 )
 {% endmacro %}
 
-{% macro get_product_sessions_between(start, end) %}
-sessions_between as (
-	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.sku != '(not set)' and
-    (s.date between '{{start}}' and '{{end}}')
-)
-{% endmacro %}
-
 {% macro trim_prod_name(parent) %}
 if(
     {{parent}}.variant is not null,
