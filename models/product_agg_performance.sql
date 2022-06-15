@@ -2,8 +2,8 @@ with
 
 {{ get_product_sessions() }},
 
-products as (
-	select * from {{ ref('int_product_sku_level') }}
+product_variants as (
+	select * from {{ ref('product_variants') }}
 ),
 
 product_performance as (
@@ -12,7 +12,7 @@ product_performance as (
 		name,
 		max(most_bought_variant),
 		sum(revenue) as total_revenue,
-	from products
+	from product_variants
 	group by name, utc_hour
 )
 

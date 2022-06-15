@@ -2,11 +2,11 @@ with
 
 {{ get_product_sessions() }},
 
-products as (
-	select * from {{ ref('int_product_sku_level') }}
+product_variants as (
+	select * from {{ ref('product_variants') }}
 ),
 
-product_performance as (
+products as (
 	select
 		utc_hour,
 		name,
@@ -17,8 +17,8 @@ product_performance as (
 		sum(total_views) as total_views,
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
-	from products
+	from product_variants
     group by name, price, utc_hour
 )
 
-select * from product_performance
+select * from products

@@ -14,7 +14,7 @@ product_sku_performance as (
         (purchases / nullif(total_views, 0)) as conversion_rate,
 		refunds,
 		total_refunded_amount,
-	from {{ ref('int_product_sku_level') }}
+	from {{ ref('product_variants') }}
     order by sku
 )
 

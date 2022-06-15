@@ -5,7 +5,7 @@ with
 {{ get_product_sessions() }},
 
 products as (
-	select * from {{ ref('int_product_sku_level') }}
+	select * from {{ ref('product_variants') }}
 ),
 
 product_channel_counts as (
