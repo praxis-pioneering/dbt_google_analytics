@@ -1,5 +1,3 @@
-{{ config(materialized='ephemeral') }}
-
 with
 
 {{ get_product_sessions() }},

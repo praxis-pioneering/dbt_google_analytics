@@ -1,3 +1,5 @@
+{{ config(materialized='ephemeral') }}
+
 with
 
 sessions as (
