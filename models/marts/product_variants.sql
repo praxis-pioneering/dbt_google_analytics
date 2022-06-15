@@ -1,11 +1,11 @@
--- replaces product_variants
 {{ config(materialized='ephemeral') }}
 
 {%- set price_divisor = 1000000 -%} -- ga money values are x10^6
 
 {%- set actions = ["view", "purchase"] -%}
 {%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "Email"] -%}
-{%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
+{%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] %}
+
 
 with
 
@@ -30,7 +30,7 @@ group_by_time_pivot_to_products as (
 		countif(is_direct) as ga_direct_sessions,
 		countif(channel = 'Direct') as true_direct_sessions,
 		array_agg(channel) as channels,
-		array_agg(medium) as mediums
+		array_agg(medium) as mediums,
 		{% for action in actions %}
 		{% for channel in channels %}
 		countif(action = '{{action}}' and channel = '{{channel}}') as {{channel | lower | replace(" ","_")}}_channel_{{action}}s,

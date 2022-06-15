@@ -29,7 +29,7 @@ if(
 	    )
 	    , ' '
     ),
-    {{parent}}.product_name
+    {{parent}}.full_product_name
 )
 {% endmacro %}
 
