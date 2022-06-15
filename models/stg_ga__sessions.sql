@@ -7,7 +7,6 @@ renamed as (
         concat(fullVisitorId, cast(visitId as string)) as session_id, -- unique session id
 		clientId as client_id, -- unique browser/device id, session agnostic
 		fullVisitorId as full_visitor_id, -- unique visitor id, hashed version of client id
-		-- userId as user_id, -- known (logged in) user id
 		visitNumber as session_number, -- user's first session = 1
 		visitId as user_session_id, -- session id, only unique to the user
         timestamp_seconds(visitStartTime) as session_start,
