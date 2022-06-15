@@ -1,4 +1,4 @@
-{{ config(materialized='ephemeral') }}
+{%- set price_divisor = 1000000 -%} -- ga money values are x10^6
 
 with
 
