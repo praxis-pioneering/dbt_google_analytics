@@ -1,44 +1,30 @@
 {%- set actions = ["view", "purchase"] -%}
-{%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "Email"] -%}
+{%- set channels = ["social", "referral", "paid_search", "organic_search", "direct", "email"] -%}
 
 with
-
-sessions as (
-	select * from {{ ref('int_sessions_grouped_by_time')}}
-),
 
 products as (
 	select * from {{ ref('product_variants') }}
 ),
 
-product_channel_counts as (
+product_channel_stats as (
 	select
-		name,
-		sku,
-		variant,
-		price,
-		total_views,
-		utc_hour,
-		countif(is_direct) as ga_direct_sessions,
-		countif(channel = 'Direct') as direct_sessions,
+		time,
+		product_name,
+   		sku,
+   		variant,
+		ga_direct_sessions,
+		true_direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
-		countif(action = '{{action}}' and channel = '{{channel}}') as {{channel | lower | replace(" ","_")}}_{{action}}s,
+			{{channel}}_channel_{{action}}s,
+			{% if action == "purchase" %}
+				price * {{channel}}_channel_purchases as {{channel}}_channel_revenue,
+				{{channel}}_channel_purchases / nullif({{channel}}_channel_views,0) as {{channel}}_channel_conversion_rate,
+			{% endif %}
 		{% endfor %}
 		{% endfor %}
 	from products
-	left outer join sessions using (sku)
-	{{ group_by_first(6) }}
-),
-
-product_channel_stats as (
-	select
-		*,
-		{% for channel in channels | map("lower") | map("replace", " ", "_") %}
-		price * {{channel}}_purchases as {{channel}}_revenue,
-		{{channel}}_purchases / nullif({{channel}}_views,0) as {{channel}}_conversion_rate,
-		{% endfor %}
-	from product_channel_counts
 )
 
 select * from product_channel_stats

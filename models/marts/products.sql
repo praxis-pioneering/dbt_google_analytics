@@ -8,7 +8,7 @@ product_variants as (
 
 products as (
 	select
-		utc_hour,
+		time,
 		name,
 		price,
 		sum(purchases) as total_purchases,
@@ -18,7 +18,7 @@ products as (
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
 	from product_variants
-    group by name, price, utc_hour
+    {{ group_by_first(3) }}
 )
 
 select * from products
