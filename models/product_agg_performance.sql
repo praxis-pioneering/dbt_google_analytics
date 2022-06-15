@@ -8,11 +8,13 @@ products as (
 
 product_performance as (
 	select
-		name as name,
+		utc_hour,
+		name,
 		max(most_bought_variant),
 		sum(revenue) as total_revenue,
+		unix_hour
 	from products
-	{{ group_by_first(1) }}
+	group by name, utc_hour, unix_hour
 )
 
 select * from product_performance

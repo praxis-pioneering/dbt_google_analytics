@@ -7,6 +7,7 @@ with
 
 product_sku_level as (
 	select
+		utc_hour,
 		max(product_name) as product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
 		sku,
 		nullif(product_variant, '(not set)') as variant,
@@ -18,8 +19,9 @@ product_sku_level as (
         sum(product_revenue/{{price_divisor}}) as revenue,
         countif(action = 'refund') as refunds,
         sum(product_refund_amount/{{price_divisor}}) as total_refunded_amount,
+		unix_hour,
 	from sessions
-    group by sku, variant
+    group by sku, variant, utc_hour, unix_hour
     order by sku
 ),
 

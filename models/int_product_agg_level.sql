@@ -8,6 +8,7 @@ products as (
 
 product_performance as (
 	select
+		utc_hour,
 		name,
 		price,
 		sum(purchases) as total_purchases,
@@ -16,8 +17,9 @@ product_performance as (
 		sum(total_views) as total_views,
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
+		unix_hour
 	from products
-	{{ group_by_first(2) }}
+    group by name, price, utc_hour, unix_hour
 )
 
 select * from product_performance

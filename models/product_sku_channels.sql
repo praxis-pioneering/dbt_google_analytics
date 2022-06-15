@@ -15,6 +15,8 @@ product_channel_counts as (
 		variant,
 		price,
 		total_views,
+		utc_hour,
+		unix_hour,
 		countif(is_direct) as ga_direct_sessions,
 		countif(channel = 'Direct') as direct_sessions,
 		{% for action in actions %}
@@ -24,7 +26,7 @@ product_channel_counts as (
 		{% endfor %}
 	from products
 	left outer join sessions using (sku)
-	{{ group_by_first(5) }}
+	{{ group_by_first(7) }}
 ),
 
 product_channel_stats as (
