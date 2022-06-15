@@ -19,9 +19,8 @@ product_sku_level as (
         sum(product_revenue/{{price_divisor}}) as revenue,
         countif(action = 'refund') as refunds,
         sum(product_refund_amount/{{price_divisor}}) as total_refunded_amount,
-		unix_hour,
 	from sessions
-    group by sku, variant, utc_hour, unix_hour
+    group by sku, variant, utc_hour
     order by sku
 ),
 

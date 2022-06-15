@@ -17,9 +17,8 @@ product_performance as (
 		sum(total_views) as total_views,
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
-		unix_hour
 	from products
-    group by name, price, utc_hour, unix_hour
+    group by name, price, utc_hour
 )
 
 select * from product_performance

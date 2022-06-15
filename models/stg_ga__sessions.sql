@@ -73,9 +73,6 @@ renamed as (
 		hits.time as hit_time,
 		hits.hour as hit_hour,
 		parse_timestamp('%Y%m%d %H', concat(date, ' ', hits.hour)) as utc_hour,
-		unix_seconds(
-			parse_timestamp('%Y%m%d %H', concat(date, ' ', hits.hour))
-		) as unix_hour,
 		hits.minute as hit_minute,
 		hits.eventInfo.eventCategory as event_category,
 		hits.eventInfo.eventAction as event_action,
