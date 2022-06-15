@@ -9,7 +9,12 @@
 
 with
 
-{{ get_product_sessions() }},
+sessions as (
+	select * from {{ ref('stg_ga__sessions') }} as s
+    where s.sku != '(not set)' and
+    s.product_name != '(not set)'
+	-- some where clause here for incremental?
+),
 
 group_by_time_pivot_to_products as (
     select
@@ -51,7 +56,7 @@ add_norm_product_name as (
 		*,
         last_value(variant)
 		over (
-			partition by {{ trim_prod_name('group_by_time_pivot_to_products') }}
+			partition by time, {{ trim_prod_name('group_by_time_pivot_to_products') }}
 			order by purchases
 			rows between unbounded preceding and unbounded following
 		) as most_bought_variant,
