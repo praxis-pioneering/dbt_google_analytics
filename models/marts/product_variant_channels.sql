@@ -4,7 +4,7 @@
 with
 
 sessions as (
-	select * from {{ ref('sessions_grouped_by_time')}}
+	select * from {{ ref('int_sessions_grouped_by_time')}}
 ),
 
 products as (
