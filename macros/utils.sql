@@ -10,14 +10,6 @@ where {{col}} is not null
 where {{col}} != "(not set)"
 {% endmacro %}
 
-{% macro get_product_sessions() %}
-sessions as (
-	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.sku != '(not set)' and
-    s.product_name != '(not set)'
-)
-{% endmacro %}
-
 {% macro trim_prod_name(parent) %}
 if(
     {{parent}}.variant is not null,

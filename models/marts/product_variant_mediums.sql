@@ -1,7 +1,7 @@
 {{
 	config(
 		materialized='incremental',
-		unique_key='time'
+		unique_key='inc_uk'
 
 	)
 }}
@@ -26,6 +26,7 @@ product_medium_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
+		inc_uk
 	from {{ ref('product_variants') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})

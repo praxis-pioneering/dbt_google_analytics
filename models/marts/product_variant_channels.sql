@@ -26,6 +26,7 @@ product_channel_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
+		inc_uk
 	from {{ ref('product_variants') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})

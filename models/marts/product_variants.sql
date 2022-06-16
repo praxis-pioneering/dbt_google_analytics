@@ -1,8 +1,7 @@
 {{
 	config(
 		materialized='incremental',
-		unique_key='time'
-
+		unique_key = 'inc_uk'
 	)
 }}
 
@@ -20,7 +19,7 @@ group_by_time_pivot_to_products as (
 		sku,
 		nullif(product_variant, '(not set)') as variant,
 		max(full_product_name) as full_product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
-		split(max(product_name), ' - ') as name_arr,
+		split(max(full_product_name), ' - ') as name_arr,
         avg(product_price) / {{price_divisor}} as price,
 		countif(action = 'view') as views,
 		count(distinct if(action = 'view', client_id, null)) as num_users_viewed,
@@ -43,10 +42,11 @@ group_by_time_pivot_to_products as (
 		countif(action = '{{action}}' and medium = '{{medium}}') as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
+		concat(utc_hour, sku) as inc_uk
     from {{ ref('stg_ga__sessions') }}
     where
 	{% if is_incremental() %}
-		time >= (select max(time) from {{ this }}) and
+		utc_hour >= (select max(time) from {{ this }}) and
 	{% endif %}
 	sku != '(not set)' and full_product_name != '(not set)'
     {{ group_by_first(3) }}

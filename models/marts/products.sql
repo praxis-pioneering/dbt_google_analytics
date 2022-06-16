@@ -20,7 +20,7 @@ group_by_product as (
 		sum(revenue) as revenue,
 		if(sum(purchases) is not null, max(most_bought_variant), null) as most_bought_variant,
 		sum(refunds) as refunds,
-		sum(refunded_amount) as total_refunded_amount,
+		sum(total_refunded_amount) as total_refunded_amount,
 		sum(direct_sessions) as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
@@ -41,8 +41,9 @@ group_by_product as (
 ),
 
 products as (
-	*,
-	safe_divide(purchases, views) as conversion_rate,
+	select
+		*,
+		safe_divide(purchases, views) as conversion_rate,
 	from group_by_product
 )
 
