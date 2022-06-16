@@ -6,7 +6,6 @@
 {%- set channels = ["Social", "Referral", "Paid Search", "Organic Search", "Direct", "Email"] -%}
 {%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] %}
 
-
 with
 
 sessions as (
@@ -48,6 +47,7 @@ group_by_time_pivot_to_products as (
 		{% endfor %}
     from sessions
     {{ group_by_first(3) }}
+	order by time
 ),
 
 add_norm_product_name as (
