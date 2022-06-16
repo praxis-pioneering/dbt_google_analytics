@@ -1,7 +1,7 @@
 {{
 	config(
 		materialized='incremental',
-		unique_key='time'
+		unique_key='inc_uk'
 	)
 }}
 
