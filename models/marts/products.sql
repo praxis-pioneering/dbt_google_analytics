@@ -15,6 +15,7 @@ group_by_product as (
 	select
 		time,
 		product_name,
+		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,
