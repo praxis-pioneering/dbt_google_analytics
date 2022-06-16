@@ -1,4 +1,10 @@
-{{ config(materialized='ephemeral') }}
+{{
+	config(
+		materialized='incremental',
+		unique_key='time'
+
+	)
+}}
 
 {%- set price_divisor = 1000000 -%} -- ga money values are x10^6
 
@@ -10,8 +16,11 @@ with
 
 sessions as (
 	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.sku != '(not set)' and
-    s.product_name != '(not set)'
+    where s.sku != '(not set)'
+    and s.product_name != '(not set)'
+	{% if is_incremental() %}
+	and where utc_hour >= (select max(utc_hour) from {{ this }})
+	{% endif %}
 	-- some where clause here for incremental?
 ),
 
