@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+
+  - name: umg_ga
+    database: umg-praxis # gcp-project
+    dataset: "189008849" # gcp-dataset
+    tables:
+      - name: ga_sessions_cut
+
+  - name: test
+    database: bigquery-public-data
+    dataset: google_analytics_sample
+    tables:
+      - name: ga_sessions_*
