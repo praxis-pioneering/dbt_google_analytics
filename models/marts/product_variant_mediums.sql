@@ -1,3 +1,11 @@
+{{
+	config(
+		materialized='incremental',
+		unique_key='time'
+
+	)
+}}
+
 {%- set actions = ["view", "purchase"] -%}
 {%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
 
@@ -5,6 +13,9 @@ with
 
 products as (
 	select * from {{ ref('product_variants') }}
+	{% if is_incremental() %}
+		where time >= (select max(time) from {{ this }})
+	{% endif %}
 ),
 
 product_medium_stats as (

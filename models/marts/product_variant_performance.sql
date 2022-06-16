@@ -1,3 +1,10 @@
+{{
+	config(
+		materialized='incremental',
+		unique_key='time'
+	)
+}}
+
 with
 
 product_sku_performance as (
@@ -14,6 +21,9 @@ product_sku_performance as (
 		refunds,
 		total_refunded_amount,
 	from {{ ref('product_variants') }}
+	{% if is_incremental() %}
+		where time >= (select max(time) from {{ this }})
+	{% endif %}
 )
 
 select * from product_sku_performance

@@ -1,10 +1,11 @@
+{{
+	config(
+		materialized='incremental',
+		unique_key='time'
+	)
+}}
+
 with
-
-{{ get_product_sessions() }},
-
-product_variants as (
-	select * from {{ ref('product_variants') }}
-),
 
 products as (
 	select
@@ -17,7 +18,10 @@ products as (
 		sum(views) as total_views,
 		sum(refunds) as total_refunds,
 		sum(total_refunded_amount) as total_refunded_amount,
-	from product_variants
+	from {{ ref('product_variants') }}
+	{% if is_incremental() %}
+		where time >= (select max(time) from {{ this }})
+	{% endif %}
     {{ group_by_first(3) }}
 )
 
