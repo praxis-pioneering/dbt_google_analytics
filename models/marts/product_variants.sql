@@ -32,6 +32,7 @@ group_by_time_pivot_to_products as (
 		countif(is_direct) as direct_sessions,
 		array_agg(channel) as channels,
 		array_agg(medium) as mediums,
+		nullif(approx_top_count(ad_campaign, 1)[offset(0)].value, '(not set)') as best_ad_campaign, 
 		{% for action in actions %}
 		{% for channel in channels %}
 		countif(action = '{{action}}' and channel = '{{channel}}') as {{channel | lower | replace(" ","_")}}_channel_{{action}}s,
