@@ -1,7 +1,7 @@
 {{
 	config(
 		materialized='incremental',
-		unique_key='time'
+		unique_key='inc_uk'
 	)
 }}
 
@@ -24,15 +24,15 @@ group_by_product as (
 		sum(direct_sessions) as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
-		sum({{channel}}_channel_{{action}}s),
+		sum({{channel}}_channel_{{action}}s) as {{channel}}_channel_{{action}}s,
 		{% endfor %}
 		{% endfor %}
 		{% for action in actions %}
 		{% for medium in mediums %}
-		sum({{medium}}_medium_{{action}}s),
+		sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-
+		concat(utc_hour, product_name) as inc_uk
 	from {{ ref('product_variants') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})

@@ -1,7 +1,7 @@
 {{
 	config(
 		materialized='incremental',
-		unique_key='time'
+		unique_key='inc_uk'
 	)
 }}
 
@@ -24,6 +24,7 @@ product_channel_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
+		inc_uk
 	from {{ ref('products') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
