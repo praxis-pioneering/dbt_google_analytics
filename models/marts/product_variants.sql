@@ -14,22 +14,12 @@
 
 with
 
-sessions as (
-	select * from {{ ref('stg_ga__sessions') }} as s
-    where s.sku != '(not set)'
-    and s.product_name != '(not set)'
-	{% if is_incremental() %}
-	and where utc_hour >= (select max(utc_hour) from {{ this }})
-	{% endif %}
-	-- some where clause here for incremental?
-),
-
 group_by_time_pivot_to_products as (
     select
 		utc_hour as time,
 		sku,
 		nullif(product_variant, '(not set)') as variant,
-		max(product_name) as full_product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
+		max(full_product_name) as full_product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
 		split(max(product_name), ' - ') as name_arr,
         avg(product_price) / {{price_divisor}} as price,
 		countif(action = 'view') as views,
@@ -54,7 +44,12 @@ group_by_time_pivot_to_products as (
 		countif(action = '{{action}}' and medium = '{{medium}}') as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-    from sessions
+    from {{ ref('stg_ga__sessions') }}
+    where
+	{% if is_incremental() %}
+		time >= (select max(time) from {{ this }}) and
+	{% endif %}
+	sku != '(not set)' and full_product_name != '(not set)'
     {{ group_by_first(3) }}
 	order by time
 ),

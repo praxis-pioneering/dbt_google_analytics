@@ -2,9 +2,6 @@ name: "dbt_google_analytics"
 version: "1.0.0"
 config-version: 2
 
-# Profile to connect to data warehouse, optional in cloud
-# profile: ''
-
 model-paths: ["models"]
 seed-paths: ["seeds"]
 test-paths: ["tests"]
@@ -16,32 +13,8 @@ target-path: target
 log-path: logs
 packages-install-path: dbt_packages
 
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
-# In this example config, we tell dbt to build all models in the example/ directory
-# as tables. These settings can be overridden in the individual model files
-# using the `{{ config(...) }}` macro.
-
-vars:
-  session_lookback_days: 2
-  rangeStart: '20190701'
-  rangeEnd: '20190701'
-
 models:
   dbt_google_analytics:
     +persist_docs:
       relation: true
       columns: true
-    staging:
-      +materialized: view
-    # admin:
-    #   materialized: table
-    # base:
-    #   materialized: table
-    # join:
-    #   materialized: table
-    # math:
-    #   materialized: table
-    # visualization:
-    #   materialized: table

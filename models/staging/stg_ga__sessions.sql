@@ -104,7 +104,7 @@ renamed as (
 		product.productSKU as sku, -- STRING 	Product SKU.
 		product.productVariant as product_variant, -- STRING 	Product Variant.
 		product.v2ProductCategory as product_category, -- STRING 	Product Category.
-		product.v2ProductName as product_name, -- STRING 	Product Name.
+		product.v2ProductName as full_product_name, -- STRING 	Product Name.
 
 		-- Transaction
 		hits.transaction.transactionId as transaction_id, -- STRING 	The transaction ID of the ecommerce transaction.
