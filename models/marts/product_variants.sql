@@ -30,8 +30,7 @@ group_by_time_pivot_to_products as (
         sum(product_refund_amount/{{price_divisor}}) as total_refunded_amount,
 		array_agg(client_id) as client_ids,
 		array_agg(action) as actions,
-		countif(is_direct) as ga_direct_sessions,
-		countif(channel = 'Direct') as true_direct_sessions,
+		countif(is_direct) as direct_sessions,
 		array_agg(channel) as channels,
 		array_agg(medium) as mediums,
 		{% for action in actions %}

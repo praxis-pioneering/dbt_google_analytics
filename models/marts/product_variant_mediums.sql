@@ -11,13 +11,6 @@
 
 with
 
-products as (
-	select * from {{ ref('product_variants') }}
-	{% if is_incremental() %}
-		where time >= (select max(time) from {{ this }})
-	{% endif %}
-),
-
 product_medium_stats as (
 	select
 		time,
@@ -33,7 +26,10 @@ product_medium_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-	from products
+	from {{ ref('product_variants') }}
+	{% if is_incremental() %}
+		where time >= (select max(time) from {{ this }})
+	{% endif %}
 )
 
 select * from product_medium_stats

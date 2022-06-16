@@ -10,22 +10,13 @@
 
 with
 
-products as (
-	select * from {{ ref('product_variants') }}
-	{% if is_incremental() %}
-		where time >= (select max(time) from {{ this }})
-	{% endif %}
-
-),
-
 product_channel_stats as (
 	select
 		time,
 		product_name,
    		sku,
    		variant,
-		ga_direct_sessions,
-		true_direct_sessions,
+		direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
 			{{channel}}_channel_{{action}}s,
@@ -35,7 +26,10 @@ product_channel_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-	from products
+	from {{ ref('product_variants') }}
+	{% if is_incremental() %}
+		where time >= (select max(time) from {{ this }})
+	{% endif %}
 )
 
 select * from product_channel_stats
