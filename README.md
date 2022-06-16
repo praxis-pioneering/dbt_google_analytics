@@ -1,1 +1,1 @@
-product centric dbt models.
+product centric dbt models for ga360.
