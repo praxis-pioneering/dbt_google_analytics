@@ -54,7 +54,7 @@ group_by_time_pivot_to_products as (
 	order by time
 ),
 
-add_norm_product_name as (
+product_variants as (
 	select
 		{{ trim_prod_name('group_by_time_pivot_to_products') }} as product_name,
 		*,
@@ -64,7 +64,8 @@ add_norm_product_name as (
 			order by purchases
 			rows between unbounded preceding and unbounded following
 		) as most_bought_variant,
+		safe_divide(purchases, views) as conversion_rate,
 	from group_by_time_pivot_to_products
 )
 
-select * from add_norm_product_name
+select * from product_variants
