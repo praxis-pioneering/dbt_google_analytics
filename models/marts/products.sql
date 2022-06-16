@@ -11,7 +11,7 @@
 
 with
 
-products as (
+group_by_product as (
 	select
 		time,
 		product_name,
@@ -38,6 +38,12 @@ products as (
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
     {{ group_by_first(2) }}
+),
+
+products as (
+	*,
+	safe_divide(purchases, views) as conversion_rate,
+	from group_by_product
 )
 
 select * from products
