@@ -32,7 +32,7 @@ group_by_product as (
 		sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-		concat(utc_hour, product_name) as inc_uk
+		concat(time, product_name) as inc_uk
 	from {{ ref('product_variants') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
