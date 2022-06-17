@@ -1,4 +1,8 @@
 {% macro get_relations_by_prefix(schema, prefix, exclude='', database=target.database) %}
+    {{ return(adapter.dispatch('get_relations_by_prefix', 'dbt_utils')(schema, prefix, exclude, database)) }}
+{% endmacro %}
+
+{% macro default__get_relations_by_prefix(schema, prefix, exclude='', database=target.database) %}
 
     {%- call statement('get_tables', fetch_result=True) %}
 
@@ -11,7 +15,12 @@
     {%- if table_list and table_list['table'] -%}
         {%- set tbl_relations = [] -%}
         {%- for row in table_list['table'] -%}
-            {%- set tbl_relation = api.Relation.create(database, row.table_schema, row.table_name) -%}
+            {%- set tbl_relation = api.Relation.create(
+                database=database,
+                schema=row.table_schema,
+                identifier=row.table_name,
+                type=row.table_type
+            ) -%}
             {%- do tbl_relations.append(tbl_relation) -%}
         {%- endfor -%}
 
@@ -19,13 +28,5 @@
     {%- else -%}
         {{ return([]) }}
     {%- endif -%}
-
-{% endmacro %}
-
-{% macro get_tables_by_prefix(schema, prefix, exclude='', database=target.database) %}
-
-    {% do exceptions.warn("Warning: the `get_tables_by_prefix` macro is no longer supported and will be deprecated in a future release of dbt-utils. Use the `get_relations_by_prefix` macro instead") %}
-
-    {{ return(dbt_utils.get_relations_by_prefix(schema, prefix, exclude, database)) }}
 
 {% endmacro %}

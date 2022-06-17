@@ -13,9 +13,18 @@ Arguments:
 #}
 
 {% macro unpivot(relation=none, cast_to='varchar', exclude=none, remove=none, field_name='field_name', value_name='value', table=none) -%}
+    {{ return(adapter.dispatch('unpivot', 'dbt_utils')(relation, cast_to, exclude, remove, field_name, value_name, table)) }}
+{% endmacro %}
+
+{% macro default__unpivot(relation=none, cast_to='varchar', exclude=none, remove=none, field_name='field_name', value_name='value', table=none) -%}
 
     {% if table %}
-        {% do exceptions.warn("Warning: the `unpivot` macro no longer accepts a `table` parameter. This parameter will be deprecated in a future release of dbt-utils. Use the `relation` parameter instead") %}
+        {%- set error_message = '
+            Warning: the `unpivot` macro no longer accepts a `table` parameter. \
+            This parameter will be deprecated in a future release of dbt-utils. Use the `relation` parameter instead. \
+            The {}.{} model triggered this warning. \
+            '.format(model.package_name, model.name) -%}
+        {%- do exceptions.warn(error_message) -%}
     {% endif %}
 
     {% if relation and table %}
@@ -36,6 +45,7 @@ Arguments:
   {%- do table_columns.update({relation: []}) %}
 
   {%- do dbt_utils._is_relation(relation, 'unpivot') -%}
+  {%- do dbt_utils._is_ephemeral(relation, 'unpivot') -%}
   {%- set cols = adapter.get_columns_in_relation(relation) %}
 
   {%- for col in cols -%}
@@ -52,7 +62,12 @@ Arguments:
       {%- endfor %}
 
       cast('{{ col.column }}' as {{ dbt_utils.type_string() }}) as {{ field_name }},
-      cast({{ col.column }} as {{ cast_to }}) as {{ value_name }}
+      cast(  {% if col.data_type == 'boolean' %}
+           {{ dbt_utils.cast_bool_to_text(col.column) }}
+             {% else %}
+           {{ col.column }}
+             {% endif %}
+           as {{ cast_to }}) as {{ value_name }}
 
     from {{ relation }}
 

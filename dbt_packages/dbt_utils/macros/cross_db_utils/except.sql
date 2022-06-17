@@ -1,5 +1,5 @@
 {% macro except() %}
-  {{ adapter_macro('dbt_utils.except') }}
+  {{ return(adapter.dispatch('except', 'dbt_utils')()) }}
 {% endmacro %}
 
 

@@ -13,6 +13,7 @@ with
 product_channel_stats as (
 	select
 		time,
+		product_id,
 		product_name,
    		sku,
    		variant,
