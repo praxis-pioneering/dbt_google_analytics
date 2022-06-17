@@ -20,7 +20,6 @@ group_by_time_pivot_to_products as (
 		nullif(product_variant, '(not set)') as variant,
 		max(full_product_name) as full_product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
 		split(max(full_product_name), ' - ') as name_arr,
-        avg(product_price) / {{price_divisor}} as price,
 		countif(action = 'view') as views,
 		count(distinct if(action = 'view', client_id, null)) as num_users_viewed,
 		countif(action = 'purchase') as purchases,
@@ -56,9 +55,10 @@ group_by_time_pivot_to_products as (
 
 product_variants as (
 	select
-		product_id,
+		s.product_id,
 		{{ trim_prod_name('group_by_time_pivot_to_products') }} as product_name,
-		*,
+		group_by_time_pivot_to_products.*,
+		price,
         last_value(variant)
 		over (
 			partition by time, {{ trim_prod_name('group_by_time_pivot_to_products') }}
@@ -67,7 +67,7 @@ product_variants as (
 		) as most_bought_variant,
 		safe_divide(purchases, views) as conversion_rate,
 	from group_by_time_pivot_to_products
-	left join {{ ref('stg_shopify__product_variant') }} using (sku)
+	left join {{ ref('stg_shopify__product_variant') }} as s using (sku)
 )
 
 select * from product_variants
