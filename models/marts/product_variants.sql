@@ -16,8 +16,10 @@ with
 group_by_time_pivot_to_products as (
     select
 		utc_hour as time,
+		product_id,
 		sku,
 		nullif(product_variant, '(not set)') as variant,
+		price,
 		max(full_product_name) as full_product_name, -- filters out weird alt names e.g. "the â€œshimmering beautifulâ€ wrap dress limited edition"
 		split(max(full_product_name), ' - ') as name_arr,
 		countif(action = 'view') as views,
@@ -42,32 +44,32 @@ group_by_time_pivot_to_products as (
 		countif(action = '{{action}}' and medium = '{{medium}}') as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-		concat(utc_hour, sku) as inc_uk
+		concat(utc_hour, sku, product_id) as inc_uk
     from {{ ref('stg_ga__sessions') }}
+	left join {{ ref('stg_shopify__product_variant') }} using (sku)
     where
 	{% if is_incremental() %}
 		utc_hour >= (select max(time) from {{ this }}) and
 	{% endif %}
 	sku != '(not set)' and full_product_name != '(not set)'
-    {{ group_by_first(3) }}
+    {{ group_by_first(5) }}
 	order by time
 ),
 
 product_variants as (
 	select
-		s.product_id,
 		{{ trim_prod_name('group_by_time_pivot_to_products') }} as product_name,
-		group_by_time_pivot_to_products.*,
-		price,
+		*,
         last_value(variant)
 		over (
-			partition by time, {{ trim_prod_name('group_by_time_pivot_to_products') }}
+			partition by time, product_id
 			order by purchases
 			rows between unbounded preceding and unbounded following
 		) as most_bought_variant,
 		safe_divide(purchases, views) as conversion_rate,
 	from group_by_time_pivot_to_products
-	left join {{ ref('stg_shopify__product_variant') }} as s using (sku)
+	
 )
 
 select * from product_variants
+

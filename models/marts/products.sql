@@ -15,7 +15,7 @@ group_by_product as (
 	select
 		time,
 		product_id,
-		product_name,
+		max(product_name) as product_name,
 		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
@@ -34,12 +34,12 @@ group_by_product as (
 		sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-		concat(time, product_name) as inc_uk
+		concat(time, product_id) as inc_uk
 	from {{ ref('product_variants') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
-    {{ group_by_first(3) }}
+    {{ group_by_first(2) }}
 ),
 
 products as (
