@@ -14,6 +14,7 @@ with
 product_medium_stats as (
 	select
 		time,
+		product_id,
 		product_name,
 		{% for action in actions %}
 		{% for medium in mediums %}

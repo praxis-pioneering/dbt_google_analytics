@@ -1,7 +1,7 @@
 {# string  -------------------------------------------------     #}
 
 {%- macro type_string() -%}
-  {{ adapter_macro('dbt_utils.type_string') }}
+  {{ return(adapter.dispatch('type_string', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_string() %}
@@ -25,11 +25,15 @@
 {# timestamp  -------------------------------------------------     #}
 
 {%- macro type_timestamp() -%}
-  {{ adapter_macro('dbt_utils.type_timestamp') }}
+  {{ return(adapter.dispatch('type_timestamp', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_timestamp() %}
     timestamp
+{% endmacro %}
+
+{% macro postgres__type_timestamp() %}
+    timestamp without time zone
 {% endmacro %}
 
 {% macro snowflake__type_timestamp() %}
@@ -40,7 +44,7 @@
 {# float  -------------------------------------------------     #}
 
 {%- macro type_float() -%}
-  {{ adapter_macro('dbt_utils.type_float') }}
+  {{ return(adapter.dispatch('type_float', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_float() %}
@@ -54,7 +58,7 @@
 {# numeric  ------------------------------------------------     #}
 
 {%- macro type_numeric() -%}
-  {{ adapter_macro('dbt_utils.type_numeric') }}
+  {{ return(adapter.dispatch('type_numeric', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_numeric() %}
@@ -69,7 +73,7 @@
 {# bigint  -------------------------------------------------     #}
 
 {%- macro type_bigint() -%}
-  {{ adapter_macro('dbt_utils.type_bigint') }}
+  {{ return(adapter.dispatch('type_bigint', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_bigint() %}
@@ -83,7 +87,7 @@
 {# int  -------------------------------------------------     #}
 
 {%- macro type_int() -%}
-  {{ adapter_macro('dbt_utils.type_int') }}
+  {{ return(adapter.dispatch('type_int', 'dbt_utils')()) }}
 {%- endmacro -%}
 
 {% macro default__type_int() %}

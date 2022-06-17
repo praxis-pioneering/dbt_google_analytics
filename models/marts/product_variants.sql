@@ -56,6 +56,7 @@ group_by_time_pivot_to_products as (
 
 product_variants as (
 	select
+		product_id,
 		{{ trim_prod_name('group_by_time_pivot_to_products') }} as product_name,
 		*,
         last_value(variant)
@@ -66,6 +67,7 @@ product_variants as (
 		) as most_bought_variant,
 		safe_divide(purchases, views) as conversion_rate,
 	from group_by_time_pivot_to_products
+	left join {{ ref('stg_shopify__product_variant') }} using (sku)
 )
 
 select * from product_variants
