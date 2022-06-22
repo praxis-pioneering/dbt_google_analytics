@@ -14,6 +14,7 @@ with
 group_by_product as (
 	select
 		time,
+		date,
 		product_id,
 		max(product_name) as product_name,
 		avg(price) as price,
@@ -39,7 +40,7 @@ group_by_product as (
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
-    {{ group_by_first(2) }}
+    {{ group_by_first(3) }}
 ),
 
 products as (

@@ -14,10 +14,9 @@ with
 product_medium_stats as (
 	select
 		time,
+		date,
 		product_id,
 		product_name,
-   		sku,
-   		variant,
 		{% for action in actions %}
 		{% for medium in mediums %}
 			{{medium}}_medium_{{action}}s,
@@ -28,7 +27,7 @@ product_medium_stats as (
 		{% endfor %}
 		{% endfor %}
 		inc_uk
-	from {{ ref('product_variants') }}
+	from {{ ref('products') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}

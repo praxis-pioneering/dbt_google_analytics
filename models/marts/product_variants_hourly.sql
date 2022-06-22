@@ -16,6 +16,7 @@ with
 group_by_time_pivot_to_products as (
     select
 		utc_hour as time,
+		date,
 		product_id,
 		sku,
 		nullif(product_variant, '(not set)') as variant,
@@ -52,7 +53,7 @@ group_by_time_pivot_to_products as (
 		utc_hour >= (select max(time) from {{ this }}) and
 	{% endif %}
 	sku != '(not set)' and full_product_name != '(not set)'
-    {{ group_by_first(5) }}
+    {{ group_by_first(6) }}
 	order by time
 ),
 
