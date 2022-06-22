@@ -1,10 +1,3 @@
-{{
-	config(
-		materialized='incremental',
-		unique_key='inc_uk'
-	)
-}}
-
 {%- set actions = ["view", "purchase"] -%}
 {%- set channels = ["social", "referral", "paid_search", "organic_search", "direct", "email"] -%}
 {%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
@@ -14,6 +7,7 @@ with
 group_by_date as (
 	select
 		date,
+		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,
@@ -30,7 +24,6 @@ group_by_date as (
 		sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-		concat(date) as inc_uk
 	from {{ ref('products_daily') }}
 	{% if is_incremental() %}
 		where date >= (select max(date) from {{ this }})

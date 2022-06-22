@@ -1,10 +1,3 @@
-{{
-	config(
-		materialized='incremental',
-		unique_key='inc_uk'
-	)
-}}
-
 {%- set actions = ["view", "purchase"] -%}
 {%- set channels = ["social", "referral", "paid_search", "organic_search", "direct", "email"] -%}
 
@@ -27,7 +20,6 @@ product_channel_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-		inc_uk
 	from {{ ref('product_variants_daily') }}
 	{% if is_incremental() %}
 		where date >= (select max(date) from {{ this }})

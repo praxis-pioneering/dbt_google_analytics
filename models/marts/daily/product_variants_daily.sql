@@ -1,10 +1,3 @@
-{{
-	config(
-		materialized='incremental',
-		unique_key = 'inc_uk'
-	)
-}}
-
 {%- set price_divisor = 1000000 -%} -- ga money values are x10^6
 
 {%- set actions = ["view", "purchase"] -%}
@@ -43,8 +36,7 @@ product_variants_daily as (
 			partition by date, product_id
 			order by sum(purchases)
 			rows between unbounded preceding and unbounded following
-		) as most_bought_variant,
-		concat(date, sku, product_id) as inc_uk
+		) as most_bought_variant
     from {{ ref('product_variants_hourly') }}
 	{% if is_incremental() %}
 	where date >= (select max(date) from {{ this }})
@@ -53,4 +45,3 @@ product_variants_daily as (
 )
 
 select * from product_variants_daily
-

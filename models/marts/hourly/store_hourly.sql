@@ -15,6 +15,7 @@ group_by_time as (
 	select
 		time,
 		date,
+		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,
@@ -36,7 +37,7 @@ group_by_time as (
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
-    group by time
+    group by time, date
 ),
 
 store as (

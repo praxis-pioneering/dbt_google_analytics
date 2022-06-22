@@ -1,11 +1,3 @@
-{{
-	config(
-		materialized='incremental',
-		unique_key='inc_uk'
-
-	)
-}}
-
 {%- set actions = ["view", "purchase"] -%}
 {%- set mediums = ["referral", "organic", "product_sync", "email", "product_shelf", "cpc", "original"] -%}
 
@@ -25,7 +17,6 @@ product_medium_stats as (
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-		inc_uk
 	from {{ ref('products_daily') }}
 	{% if is_incremental() %}
 		where date >= (select max(date) from {{ this }})
