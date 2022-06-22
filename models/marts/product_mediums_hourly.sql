@@ -27,7 +27,7 @@ product_medium_stats as (
 		{% endfor %}
 		{% endfor %}
 		inc_uk
-	from {{ ref('products') }}
+	from {{ ref('products_hourly') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}

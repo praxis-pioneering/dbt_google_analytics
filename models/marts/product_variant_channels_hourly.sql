@@ -29,7 +29,7 @@ product_channel_stats as (
 		{% endfor %}
 		{% endfor %}
 		inc_uk
-	from {{ ref('product_variants') }}
+	from {{ ref('product_variants_hourly') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}

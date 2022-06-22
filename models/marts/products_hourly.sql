@@ -36,7 +36,7 @@ group_by_product as (
 		{% endfor %}
 		{% endfor %}
 		concat(time, product_id) as inc_uk
-	from {{ ref('product_variants') }}
+	from {{ ref('product_variants_hourly') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
