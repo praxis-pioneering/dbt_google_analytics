@@ -21,7 +21,7 @@ product_variants_daily as (
 		product_name,
 		variant,
 		price,
-		sum(views),
+		sum(views) as views,
 		sum(num_users_viewed) as num_users_viewed,
 		sum(purchases) as purchases,
         sum(revenue) as revenue,
@@ -41,7 +41,7 @@ product_variants_daily as (
         last_value(variant)
 		over (
 			partition by date, product_id
-			order by purchases
+			order by sum(purchases)
 			rows between unbounded preceding and unbounded following
 		) as most_bought_variant,
 		concat(date, sku, product_id) as inc_uk
@@ -50,7 +50,7 @@ product_variants_daily as (
 	where date >= (select max(date) from {{ this }})
 	{% endif %}
     {{ group_by_first(6) }}
-),
+)
 
-select * from product_variants
+select * from product_variants_daily
 
