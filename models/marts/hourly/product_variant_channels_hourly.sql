@@ -13,8 +13,11 @@ with
 product_channel_stats as (
 	select
 		time,
+		date,
 		product_id,
 		product_name,
+   		sku,
+   		variant,
 		direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
@@ -26,7 +29,7 @@ product_channel_stats as (
 		{% endfor %}
 		{% endfor %}
 		inc_uk
-	from {{ ref('products') }}
+	from {{ ref('product_variants_hourly') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
