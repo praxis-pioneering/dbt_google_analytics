@@ -17,7 +17,6 @@ group_by_product as (
 		date,
 		product_id,
 		max(product_name) as product_name,
-		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,

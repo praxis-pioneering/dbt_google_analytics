@@ -15,7 +15,6 @@ group_by_time as (
 	select
 		time,
 		date,
-		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,

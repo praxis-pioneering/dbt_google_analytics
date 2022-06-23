@@ -7,7 +7,6 @@ with
 group_by_date as (
 	select
 		date,
-		avg(price) as price,
 		sum(views) as views,
 		sum(purchases) as purchases,
 		sum(revenue) as revenue,
