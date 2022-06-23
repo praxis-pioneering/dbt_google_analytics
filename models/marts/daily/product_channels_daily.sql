@@ -8,20 +8,21 @@ product_channel_stats as (
 		date,
 		product_id,
 		product_name,
-		direct_sessions,
+		sum(direct_sessions) as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
-			{{channel}}_channel_{{action}}s,
+			sum({{channel}}_channel_{{action}}s) as {{channel}}_channel_{{action}}s,
 			{% if action == "purchase" %}
-				price * {{channel}}_channel_purchases as {{channel}}_channel_revenue,
-				{{channel}}_channel_purchases / nullif({{channel}}_channel_views,0) as {{channel}}_channel_conversion_rate,
+				sum({{channel}}_channel_revenue) as {{channel}}_channel_revenue,
+				sum({{channel}}_channel_purchases) / nullif(sum({{channel}}_channel_views),0) as {{channel}}_channel_conversion_rate,
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-	from {{ ref('products_daily') }}
+	from {{ ref('product_variant_channels_daily') }}
 	{% if is_incremental() %}
 		where date >= (select max(date) from {{ this }})
 	{% endif %}
+	{{ group_by_first(3) }}
 )
 
 select * from product_channel_stats

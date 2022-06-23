@@ -6,20 +6,21 @@ with
 store_channel_stats as (
 	select
 		date,
-		direct_sessions,
+		sum(direct_sessions) as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
-			{{channel}}_channel_{{action}}s,
+			sum({{channel}}_channel_{{action}}s) as {{channel}}_channel_{{action}}s,
 			{% if action == "purchase" %}
-				price * {{channel}}_channel_purchases as {{channel}}_channel_revenue,
-				{{channel}}_channel_purchases / nullif({{channel}}_channel_views,0) as {{channel}}_channel_conversion_rate,
+				sum({{channel}}_channel_revenue) as {{channel}}_channel_revenue,
+				sum({{channel}}_channel_purchases) / nullif(sum({{channel}}_channel_views),0) as {{channel}}_channel_conversion_rate,
 			{% endif %}
 		{% endfor %}
 		{% endfor %}
-	from {{ ref('store_daily') }}
+	from {{ ref('product_channels_daily') }}
 	{% if is_incremental() %}
 		where date >= (select max(date) from {{ this }})
 	{% endif %}
+	group by date
 )
 
 select * from store_channel_stats

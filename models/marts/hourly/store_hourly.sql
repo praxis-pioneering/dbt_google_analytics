@@ -32,7 +32,7 @@ group_by_time as (
 		sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
 		{% endfor %}
 		{% endfor %}
-		concat(time) as inc_uk
+		time as inc_uk
 	from {{ ref('products_hourly') }}
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
