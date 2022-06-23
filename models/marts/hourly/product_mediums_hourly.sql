@@ -16,7 +16,7 @@ product_medium_stats as (
 		time,
 		date,
 		product_id,
-		product_name,
+		max(product_name) as product_name,
 		{% for action in actions %}
 		{% for medium in mediums %}
 			sum({{medium}}_medium_{{action}}s) as {{medium}}_medium_{{action}}s,
@@ -31,7 +31,7 @@ product_medium_stats as (
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
-	{{ group_by_first(4) }}
+	{{ group_by_first(3) }}
 )
 
 select * from product_medium_stats

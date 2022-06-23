@@ -15,7 +15,7 @@ product_channel_stats as (
 		time,
 		date,
 		product_id,
-		product_name,
+		max(product_name) as product_name,
 		sum(direct_sessions) as direct_sessions,
 		{% for action in actions %}
 		{% for channel in channels %}
@@ -31,7 +31,7 @@ product_channel_stats as (
 	{% if is_incremental() %}
 		where time >= (select max(time) from {{ this }})
 	{% endif %}
-	{{ group_by_first(4) }}
+	{{ group_by_first(3) }}
 )
 
 select * from product_channel_stats
